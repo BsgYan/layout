@@ -1,0 +1,121 @@
+<!-- 用onScroll监听会一直触发太多次
+
+IntersectionObserver 是浏览器提供的构造函数
+观察目标元素和可视化窗口产生的交叉区域
+
+const observer=new IntersectionObserver(callback)
+callback目标元素能看见触发一次，目标元素看不见触发一次
+
+observer.observe(DOM节点)
+
+图片加载出来后就不需要观察了
+observer.unobserve(DOM节点)    -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{margin: 0; padding: 0;}
+        body{background-color: pink;}
+
+        .container{
+            display: grid;
+            padding: 20px;
+            grid-gap: 20px;
+            /* 列数和宽度 */
+            grid-template-columns: repeat(auto-fill,minmax(200px,1fr));
+            /* 行的默认高度 */
+            grid-auto-rows: 210px;
+            /* 尽可能紧密填满，尽量不出现空格 */
+            grid-auto-flow: dense;
+        }
+
+        .container>div{
+            background: blue;
+            overflow: hidden;
+        }
+        img{
+            width: 100%;
+            height: 100%;
+        }
+        .tall{
+            /* span关键字，表示"跨越" */
+            /* 跨俩行 */
+            grid-row: span 2;
+        }
+        .wide{
+            /* 跨俩列 */
+            grid-column: span 2;
+        }
+        .big{
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+    
+
+
+    </style>
+</head>
+
+<body>
+    <div class="container" id="app">
+       <div v-for="img in imgList" :key="img" ><img :data-src="img" ></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        const app = new Vue({
+            el: "#app",
+            data:{
+                //假设从后台获取，图片不给出宽高就自己根据比例大小设置div跨越多少个行列
+                imgList:['1-tall.jpg','2-basic.jpg','3-tall.jpg','4-tall.jpg','5-wide.jpg',
+                        '6-wide.jpg','7-wide.jpg','8-big.jpg','9-basic.jpg','10-tall.jpg',
+                        '11-wide.jpg','12-tall.jpg','13-big.jpg','14-wide.jpg','15-big.jpg',
+                        '16-tall.jpg','17-tall.jpg','18-wide.jpg','19-big.jpg','20-tall.jpg',
+                        '21-basic.jpg','22-wide.jpg','23-tall.jpg','24-tall.jpg','25-wide.jpg',
+                        '26-wide.jpg','27-tall.jpg','28-wide.jpg','29-big.jpg','30-basic.jpg',
+                        '31-basic.jpg','32-wide.jpg','33-wide.jpg','34-tall.jpg','35-basic.jpg'
+                ]
+            },
+            mounted(){
+                this.loadImg();
+            },
+            methods:{
+                loadImg:()=>{
+                    const images=document.querySelectorAll('img');
+                    const observer=new IntersectionObserver(entries=>{
+                        entries.forEach(entry=>{
+                            if(entry.isIntersecting){
+                                // entry.target 观察的DOM元素
+                                const image = entry.target;
+                                
+                                //通过设置样式决定图片跨越多少个网格
+                                let type=image.dataset.src.split('-')[1].slice(0,-4);
+                                if(type==='tall'){image.parentNode.setAttribute('class','tall')}
+                                else if(type==='wide'){image.parentNode.setAttribute('class','wide')}
+                                else if(type==='big'){image.parentNode.setAttribute('class','big')}
+                                
+                                //懒加载
+                                image.setAttribute('src','imgs/'+image.dataset.src);
+
+                                //图片已经加载就无需观察
+                                observer.unobserve(image);
+                            }
+                        })
+                    })
+                    images.forEach(image => {
+                        //观察每个img节点
+                        observer.observe(image);
+                    });
+                }
+            }
+        })
+    </script>
+</body>
+</html>
+

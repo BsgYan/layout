@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    *{margin: 0; padding: 0;}
+    .box{
+        position: relative;
+    }
+    .pu{
+        position: absolute;
+        box-sizing:border-box;
+    }
+    .a{
+        height:300px;
+        background-color:antiquewhite;
+    }
+    .b{
+        height:170px;
+        background-color:rgb(220, 255, 205);
+    }
+    .c{
+        height:480px;
+        background-color:rgb(238, 215, 250);
+    }
+    .d{
+        height:260px;
+        background-color:rgb(250, 219, 215);
+    }
+</style>
+<body>
+    <div class="box">
+        <div class="pu">
+            <div class="a"></div>
+        </div>
+        <div class="pu">
+            <div class="b"></div>
+        </div>
+        <div class="pu">
+            <div class="c"></div>
+        </div>
+        <div class="pu">
+            <div class="d"></div>
+        </div>
+        <div class="pu">
+            <div class="b"></div>
+        </div>
+        <div class="pu">
+            <div class="d"></div>
+        </div>
+        <div class="pu">
+            <div class="c"></div>
+        </div>
+        <div class="pu">
+            <div class="a"></div>
+        </div>
+	    <div class="pu">
+            <div class="a"></div>
+        </div>
+        <div class="pu">
+            <div class="b"></div>
+        </div>
+        <div class="pu">
+            <div class="c"></div>
+        </div>
+        <div class="pu">
+            <div class="d"></div>
+        </div>
+        <div class="pu">
+            <div class="b"></div>
+        </div>
+        <div class="pu">
+            <div class="d"></div>
+        </div>
+        <div class="pu">
+            <div class="c"></div>
+        </div>
+        <div class="pu">
+            <div class="a"></div>
+        </div>
+    </div>
+</body>
+<script>
+    let pus=document.getElementsByClassName("pu");
+    //自定义单项宽度、行间距
+    let itemWidth=0;
+    let padding=15;
+    let rowGap=15;
+
+    paint();
+
+    //监听窗口大小改变事件
+    window.onresize=debounce(()=>{
+        paint();
+    })
+
+    //绘制
+   function paint(){
+        let winWidth=document.body.clientWidth;
+        
+       //响应式布局
+        if(winWidth>950){
+            itemWidth=255;
+        }else if(winWidth>550){
+            itemWidth= 210;
+        }else{
+            itemWidth=winWidth-padding*2;
+        }
+
+        //列数
+        let cols=Math.floor((winWidth-padding*2)/itemWidth);
+        //列间gap
+        let columnGap=(winWidth-padding*2-itemWidth*cols)/(cols-1);
+        //初始化 列高数组
+        let colHeightArray= Array(cols).fill(0);
+        //绘制
+        Array.from(pus).map(item=>{
+                let min=Math.min(...colHeightArray);
+                let index=colHeightArray.indexOf(min);
+                
+                //定位元素
+                item.style.left=index ? (itemWidth+columnGap)*index+padding+"px" : padding+"px";
+                item.style.top= min===0 ? min+padding+"px": min+rowGap+"px";
+                //存入列高数组
+                colHeightArray[index]+=item.getBoundingClientRect().height+rowGap;
+                //设置宽度
+                item.style.width=itemWidth+'px';
+            })
+   }
+
+   //防抖  执行最后一次
+   function debounce(fn, delay=50){
+    let t = null
+    return function() {
+        if (t){
+            clearTimeout(t)
+        }
+        t = setTimeout(() => {
+            fn.apply(this)
+        }, delay)
+    }
+}
+
+   
+</script>
+</html>

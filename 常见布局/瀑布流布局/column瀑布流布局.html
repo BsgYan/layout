@@ -1,0 +1,71 @@
+<!-- 从上往下的加载 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{margin: 0; padding: 0;}
+
+        .container{
+            column-count: 5;
+            column-gap: 15px;
+        }
+
+        .container>div{
+            margin-bottom: 15px;
+        }
+        img{
+            display: block;
+            width: 100%;
+        }
+
+        @media (max-width:850px) {
+            .container{
+                column-count: 4;
+            }
+        }
+
+        @media (max-width:600px) {
+            .container{
+                column-count: 2;
+            }
+        }
+        
+        @media (max-width:500px) {
+            .container{
+                column-count: 1;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="container" id="app">
+        <div v-for="img in imgList" :key="img" ><img :src=`imgs/${img}` ></div>
+    </div>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        const app = new Vue({
+            el: "#app",
+            data:{
+                imgList:['1-tall.jpg','2-basic.jpg','3-tall.jpg','4-tall.jpg','5-wide.jpg',
+                        '6-wide.jpg','7-wide.jpg','8-big.jpg','9-basic.jpg','10-tall.jpg',
+                        '11-wide.jpg','12-tall.jpg','13-big.jpg','14-wide.jpg','15-big.jpg',
+                        '16-tall.jpg','17-tall.jpg','18-wide.jpg','19-big.jpg','20-tall.jpg',
+                        '21-basic.jpg','22-wide.jpg','23-tall.jpg','24-tall.jpg','25-wide.jpg',
+                        '26-wide.jpg','27-tall.jpg','28-wide.jpg','29-big.jpg','30-basic.jpg',
+                        '31-basic.jpg','32-wide.jpg','33-wide.jpg','34-tall.jpg','35-basic.jpg'
+                ]
+            }
+        })
+    </script>
+</body>
+</html>
+
